@@ -12,12 +12,12 @@ function RecipeCard() {
           <Icon name="star-solid" color={"gold"} size={16} />4.5
         </div>
       </div>
-      <div className='relative h-72 w-full mx-auto -mt-[30%] flex flex-col gap-6 shadow-sm bg-[#ECECEC] rounded-2xl p-4 pt-[50%] -z-10'>
-        <h4 className='text-center font-bold '>
+      <div className='relative content-end  h-64 w-full mx-auto -mt-[37%]  shadow-sm bg-[#ECECEC] rounded-2xl p-4 pt-[50%] -z-10'>
+       <div className='mt-auto relative flex flex-col gap-6'> <h4 className='text-center font-bold '>
           Classic Greek Salad
         </h4>
         <div className='flex justify-between items-end'>
-          <div className='flex flex-col gap-4'>
+          <div className='flex flex-col gap-2'>
             <p>
               Time
             </p>
@@ -31,7 +31,7 @@ function RecipeCard() {
           </button>
         </div>
       </div>
-
+      </div>
     </div>
   )
 }
