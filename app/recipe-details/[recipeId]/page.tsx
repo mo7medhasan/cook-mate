@@ -3,6 +3,7 @@ import Icon from "@/components/ui-assets/Icon";
 import Image from "next/image";
 import React from "react";
 import { format } from 'date-fns';
+import RateModal from "@/components/recipe-details/RateModal";
 type Props = {
   params: {
     recipeId: string;
@@ -86,12 +87,7 @@ function RecipeDetails({ params: { recipeId } }: Props) {
               <Icon name="star-solid" color={"gold"} size={24} />
               <Icon name="star-half" color={"gold"} size={24} />
             </div>
-            <button className="bg-shade border font-semibold rounded-full flex items-center gap-5 px-7 py-3 uppercase " onClick={() => { }}>
-              Rate
-              <Icon name="star-1" color={"black"} size={24} />
-
-
-            </button>
+            <RateModal />
           </div>
           <h1 className="text-5xl font-bold ">
             Cheesy Samosa Puffs
