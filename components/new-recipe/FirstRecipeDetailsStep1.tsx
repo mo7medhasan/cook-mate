@@ -2,9 +2,10 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useState } from "react";
-import { TextInput, Button, Textarea } from "@mantine/core";
+import { TextInput} from "@mantine/core";
 import { UploadFile } from "../UploadFile";
 import Icon from "../ui-assets/Icon";
+import { useRouter } from "next/navigation";
 
 // Define the shape of the form values
 interface FormValues {
@@ -30,10 +31,10 @@ const validationSchema = Yup.object().shape({
   recipeImages:  Yup.array().of(Yup.string().required("Required")).min(1, "Add at least one Image").required("Required"),
 });
 
-function FirstRecipeDetailsStep1() {
+function FirstRecipeDetailsStep1({setData}:{setData:React.Dispatch<React.SetStateAction<{}>>}) {
   const [fileUrls, setFileUrls] = useState<File[]>([]);
   const [ingredients, setIngredients] = useState<string[]>(initialValues.recipeIngredients);
-
+const router=useRouter()
   const handleUpload = async (file: File[]) => {
     // Replace this with your actual upload function
     //  const fileUrl = await uploadFile(file);
@@ -46,12 +47,12 @@ function FirstRecipeDetailsStep1() {
       <Formik
        initialValues={initialValues}
        validationSchema={validationSchema}
-       onSubmit={(values, { setSubmitting,setFieldValue }) => {
+       onSubmit={(values, { setSubmitting }) => {
        
-         console.log("values", values);
+         setData(values)
          setTimeout(() => {
-          //  alert(JSON.stringify(values, null, 2));
            setSubmitting(false);
+           router.push('/new-recipe?step=2')
          }, 400);
        }}
       >
@@ -76,13 +77,15 @@ function FirstRecipeDetailsStep1() {
                   />
                 </div>
                 <div className="space-y-2">
+                <label htmlFor="recipeDescription">Recipe Description</label>
+
                   <Field
-                
+                id="recipeDescription"
                     label="Recipe Description"
                     name="recipeDescription"
                     placeholder="Enter Recipe Description"
                     component={'textarea'}
-                    className="w-full border rounded-lg p-4 h-32 "
+                    className="w-full border rounded-xl p-4 h-32 "
                   />
                   <ErrorMessage
                     name="recipeDescription"
