@@ -4,21 +4,37 @@ import * as Yup from "yup";
 import { useState } from "react";
 import { TextInput, Button, Textarea } from "@mantine/core";
 import { UploadFile } from "../UploadFile";
+import Icon from "../ui-assets/Icon";
 
+// Define the shape of the form values
+interface FormValues {
+  recipeName: string;
+  recipeDescription: string;
+  recipeIngredients: string[];
+  recipeImages: File | null;
+}
+
+// Define the initial form values
+const initialValues: FormValues = {
+  recipeName: "",
+  recipeDescription: "",
+  recipeIngredients: ["", "", ""], // Add initial ingredients here
+  recipeImages: null,
+};
+
+// Define the validation schema
 const validationSchema = Yup.object().shape({
   recipeName: Yup.string().required("Required"),
   recipeDescription: Yup.string().required("Required"),
-  recipeIngredients: Yup.array()
-    .of(Yup.string().required("Required"))
-    .min(1, "Add at least one ingredient")
-    .required("Required"),
-  recipeImages: Yup.mixed().optional(),
+  recipeIngredients: Yup.array().of(Yup.string().required("Required")).min(1, "Add at least one ingredient").required("Required"),
+  recipeImages:  Yup.array().of(Yup.string().required("Required")).min(1, "Add at least one Image").required("Required"),
 });
 
 function FirstRecipeDetailsStep1() {
-  const [fileUrls, setFileUrls] = useState([]);
-  const [ingredients, setIngredients] = useState(["", "", ""]);
-  const handleUpload = async (file: any) => {
+  const [fileUrls, setFileUrls] = useState<File[]>([]);
+  const [ingredients, setIngredients] = useState<string[]>(initialValues.recipeIngredients);
+
+  const handleUpload = async (file: File[]) => {
     // Replace this with your actual upload function
     //  const fileUrl = await uploadFile(file);
     setFileUrls(file);
@@ -28,25 +44,21 @@ function FirstRecipeDetailsStep1() {
   return (
     <>
       <Formik
-        initialValues={{
-          recipeName: "",
-          recipeDescription: "",
-          recipeIngredients: ingredients,
-          recipeImages: null,
-        }}
-        validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting }) => {
-          console.log("values", values);
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
-            setSubmitting(false);
-          }, 400);
-        }}
+       initialValues={initialValues}
+       validationSchema={validationSchema}
+       onSubmit={(values, { setSubmitting,setFieldValue }) => {
+       
+         console.log("values", values);
+         setTimeout(() => {
+           alert(JSON.stringify(values, null, 2));
+           setSubmitting(false);
+         }, 400);
+       }}
       >
-        {({ isSubmitting, values }) => (
+        {({ isSubmitting,handleSubmit,setFieldValue}) => (
           <Form>
-            <div className="w-full grid lg:grid-cols-11 gap-x-28 gap-6">
-              <div className="col-span-6 grid gap-12">
+            <div className="flex lg:gap-x-28  flex-wrap-reverse gap-6">
+              <div className="flex-auto grid gap-12">
                 <h2 className="text-primary font-bold text-xl -mb-8">
                   First Recipe Details
                 </h2>
@@ -64,16 +76,13 @@ function FirstRecipeDetailsStep1() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Textarea
-                    radius="md"
-                    autosize
-                    minRows={4}
-                    maxRows={4}
+                  <Field
+                
                     label="Recipe Description"
                     name="recipeDescription"
                     placeholder="Enter Recipe Description"
-                    component={Field}
-                    className="h-24"
+                    component={'textarea'}
+                    className="w-full border rounded-lg p-4 h-32 "
                   />
                   <ErrorMessage
                     name="recipeDescription"
@@ -81,7 +90,7 @@ function FirstRecipeDetailsStep1() {
                   />
                 </div>
                 <div className="grid gap-6">
-                  {[...Array(ingredients.length).keys()].map((key) => (
+                {ingredients.map((_, key) => (
                     <div key={key}>
                       <TextInput
                         radius="xl"
@@ -106,18 +115,31 @@ function FirstRecipeDetailsStep1() {
                     Add new
                   </button>
                 </div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  onClick={()=>{
+                    setFieldValue("recipeImages",fileUrls)
+                    handleSubmit()
+                  }}
+                  className="flex justify-center items-center mt-6 w-full flex-1 rounded-full bg-secondary text-white uppercase p-2 font-semibold"
+                >
+                  Next
+                  <Icon name="arrow-right-2" color={"white"} size={24} />
+                </button>
               </div>
-              <div className="col-span-5 space-y-4 ">
+              <div className="flex-auto space-y-4 ">
                 <h2 className="text-primary font-bold text-xl ">
                   Recipe images
                 </h2>
 
                 <UploadFile handleUpload={handleUpload} fileUrls={fileUrls} />
+                <ErrorMessage
+                    name="recipeImages"
+                    render={(mess) => <p className="text-red-600">{mess}</p>}
+                  />
               </div>
             </div>
-            <Button type="submit" className="mt-6" disabled={isSubmitting}>
-              Submit
-            </Button>
           </Form>
         )}
       </Formik>
