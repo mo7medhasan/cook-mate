@@ -36,7 +36,6 @@ export default function RootLayout({
     <html lang="en" className={`${montserrat.variable}  ${Natashawalke.variable}  ${PetitCochon.variable} `}>
       <head>
         <ColorSchemeScript />
-        <link rel="shortcut icon" href="/Images/meun1" />
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
